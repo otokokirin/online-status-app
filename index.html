@@ -2,8 +2,36 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>オンラインステータス</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 10px;
+      max-width: 480px; /* スマホ画面幅くらいに制限 */
+      margin: auto;
+    }
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      font-size: 16px;
+      box-sizing: border-box;
+      margin-bottom: 10px;
+    }
+    button {
+      width: 48%;
+      padding: 12px;
+      font-size: 16px;
+      margin: 1%;
+      cursor: pointer;
+    }
+    ul {
+      padding-left: 15px;
+      font-size: 16px;
+    }
+  </style>
 </head>
+
 <body>
   <h1>オンラインステータス管理</h1>
   <input type="text" id="username" placeholder="名前を入力" />

@@ -37,6 +37,7 @@
   <input type="text" id="username" placeholder="名前を入力" />
   <button id="onlineBtn">オンラインにする</button>
   <button id="offlineBtn">オフラインにする</button>
+  <button id="offlineAllBtn">全員オフラインにする</button>
 
   <h2>現在のステータス一覧</h2>
   <ul id="statusList"></ul>
@@ -103,6 +104,14 @@ usernameInput.addEventListener('input', () => {
       usernameInput.value = '';
     }
   });
+});
+const offlineAllBtn = document.getElementById('offlineAllBtn');
+
+offlineAllBtn.addEventListener('click', () => {
+  // 全てのユーザー情報を削除（全員オフライン）
+  db.ref('users').remove()
+    .then(() => alert('全員をオフラインにしました'))
+    .catch(err => console.error('削除時のエラー:', err));
 });
 
   </script>

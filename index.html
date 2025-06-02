@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>オンラインステータス</title>
+</head>
+<body>
+  <h1>オンラインステータス管理</h1>
+  <input type="text" id="username" placeholder="名前を入力" />
+  <button id="onlineBtn">オンラインにする</button>
+  <button id="offlineBtn">オフラインにする</button>
+
+  <h2>現在のステータス一覧</h2>
+  <ul id="statusList"></ul>
+
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-database-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+        apiKey: "AIzaSyAQ2-dzou5FJOJiDzj5tbjdUy9GFzlgyfY",
+    authDomain: "onlinestatusapp-2792b.firebaseapp.com",
+    databaseURL: "https://onlinestatusapp-2792b-default-rtdb.firebaseio.com",
+    projectId: "onlinestatusapp-2792b",
+    storageBucket: "onlinestatusapp-2792b.firebasestorage.app",
+    messagingSenderId: "267774072713",
+    appId: "1:267774072713:web:ef0efa7f5f8bc586583358"
+    };
+    firebase.initializeApp(firebaseConfig);
+
+    const db = firebase.database();
+
+    const usernameInput = document.getElementById('username');
+    const onlineBtn = document.getElementById('onlineBtn');
+    const offlineBtn = document.getElementById('offlineBtn');
+    const statusList = document.getElementById('statusList');
+
+    onlineBtn.addEventListener('click', () => {
+      const username = usernameInput.value.trim();
+      if (username) {
+        db.ref('users/' + username).set('online');
+      }
+    });
+
+    // オフラインにする（名前を削除する）
+offlineBtn.addEventListener('click', () => {
+  const username = usernameInput.value.trim();
+  if (username) {
+    db.ref('users/' + username).remove();
+  }
+});
+
+
+    db.ref('users').on('value', snapshot => {
+      const users = snapshot.val();
+      statusList.innerHTML = '';
+      for (let user in users) {
+        const li = document.createElement('li');
+        li.textContent = `${user} : ${users[user]}`;
+        statusList.appendChild(li);
+      }
+    });
+  </script>
+</body>
+</html>

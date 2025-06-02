@@ -89,6 +89,22 @@ offlineBtn.addEventListener('click', () => {
         statusList.appendChild(li);
       }
     });
+    // NGワードのリスト
+const ngWords = ['嵯峨', 'サガ', 'サーガ','saga','さが'];
+
+// 入力欄の内容をチェック
+usernameInput.addEventListener('input', () => {
+  const inputText = usernameInput.value.trim();
+  // NGワードが含まれているか
+  ngWords.forEach(ng => {
+    if (inputText.includes(ng)) {
+      alert(`注意: 「${ng}」という部員は存在しません。`);
+      // 入力をクリアする（または別の動作）
+      usernameInput.value = '';
+    }
+  });
+});
+
   </script>
 </body>
 </html>

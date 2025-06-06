@@ -41,6 +41,8 @@
 
   <h2>現在のステータス一覧</h2>
   <ul id="statusList"></ul>
+  <h2>オンラインログ</h2>
+  <ul id="logList"></ul>
 
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
@@ -59,18 +61,51 @@
     firebase.initializeApp(firebaseConfig);
 
     const db = firebase.database();
+const logList = document.getElementById('logList');
 
+function getFormattedDate() {
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth() + 1;
+  const day = now.getDate();
+  const hour = now.getHours().toString().padStart(2, '0');
+  const minute = now.getMinutes().toString().padStart(2, '0');
+
+  const days = ['日', '月', '火', '水', '木', '金', '土'];
+  const youbi = days[now.getDay()];
+
+  return `${year}年${month}月${day}日（${youbi}）${hour}時${minute}分`;
+}
+
+// ログの表示処理
+db.ref('logs').limitToLast(50).on('value', snapshot => {
+  const logs = snapshot.val();
+  logList.innerHTML = '';
+  for (let key in logs) {
+    const li = document.createElement('li');
+    li.textContent = `${logs[key].user} が ${logs[key].time} にオンラインになりました`;
+    logList.appendChild(li);
+  }
+});
     const usernameInput = document.getElementById('username');
     const onlineBtn = document.getElementById('onlineBtn');
     const offlineBtn = document.getElementById('offlineBtn');
     const statusList = document.getElementById('statusList');
 
-    onlineBtn.addEventListener('click', () => {
-      const username = usernameInput.value.trim();
-      if (username) {
-        db.ref('users/' + username).set('online');
-      }
+onlineBtn.addEventListener('click', () => {
+  const username = usernameInput.value.trim();
+  if (username) {
+    db.ref('users/' + username).set('online');
+
+    // ★ ログを記録
+    const timestamp = getFormattedDate();
+    db.ref('logs').push({
+      user: username,
+      time: timestamp
     });
+  }
+});
+
 
     // オフラインにする（名前を削除する）
 offlineBtn.addEventListener('click', () => {
@@ -108,10 +143,12 @@ usernameInput.addEventListener('input', () => {
 const offlineAllBtn = document.getElementById('offlineAllBtn');
 
 offlineAllBtn.addEventListener('click', () => {
-  // 全てのユーザー情報を削除（全員オフライン）
-  db.ref('users').remove()
-    .then(() => alert('全員をオフラインにしました'))
-    .catch(err => console.error('削除時のエラー:', err));
+  const confirmResult = confirm('本当に全員をオフラインにしますか？この操作は取り消せません。');
+  if (confirmResult) {
+    db.ref('users').remove()
+      .then(() => alert('全員をオフラインにしました'))
+      .catch(err => console.error('削除時のエラー:', err));
+  }
 });
 
   </script>

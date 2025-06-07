@@ -77,16 +77,21 @@ function getFormattedDate() {
   return `${year}年${month}月${day}日（${youbi}）${hour}時${minute}分`;
 }
 
-// ログの表示処理
 db.ref('logs').limitToLast(50).on('value', snapshot => {
   const logs = snapshot.val();
   logList.innerHTML = '';
-  for (let key in logs) {
-    const li = document.createElement('li');
-    li.textContent = `${logs[key].user} が ${logs[key].time} にオンラインになりました`;
-    logList.appendChild(li);
+
+  if (logs) {
+    // Firebaseのオブジェクトを逆順にして表示
+    const reversedKeys = Object.keys(logs).reverse();
+    reversedKeys.forEach(key => {
+      const li = document.createElement('li');
+      li.textContent = `${logs[key].user} が ${logs[key].time} にオンラインになりました`;
+      logList.appendChild(li);
+    });
   }
 });
+
     const usernameInput = document.getElementById('username');
     const onlineBtn = document.getElementById('onlineBtn');
     const offlineBtn = document.getElementById('offlineBtn');
